@@ -1,9 +1,3 @@
-/* http://keith-wood.name/countdown.html
-   Countdown for jQuery v2.0.1.
-   Written by Keith Wood (kbwood{at}iinet.com.au) January 2008.
-   Available under the MIT (https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt) license. 
-   Please attribute the author if you use it. */
-
 (function($) { // Hide scope, no $ conflict
 
     var pluginName = 'countdown';
@@ -29,76 +23,8 @@
 
         /** The name of the plugin. */
         name: pluginName,
-
-        /** Countdown expiry callback.
-        	Triggered when the countdown expires.
-        	@callback expiryCallback */
-
-        /** Countdown server synchronisation callback.
-        	Triggered when the countdown is initialised.
-        	@callback serverSyncCallback
-        	@return {Date} The current date/time on the server as expressed in the local timezone. */
-
-        /** Countdown tick callback.
-        	Triggered on every <code>tickInterval</code> ticks of the countdown.
-        	@callback tickCallback
-        	@param periods {number[]} The breakdown by period (years, months, weeks, days,
-        			hours, minutes, seconds) of the time remaining/passed. */
-
-        /** Countdown which labels callback.
-        	Triggered when the countdown is being display to determine which set of labels
-        	(<code>labels</code>, <code>labels1</code>, ...) are to be used for the current period value.
-        	@callback whichLabelsCallback
-        	@param num {number} The current period value.
-        	@return {number} The suffix for the label set to use. */
-
-        /** Default settings for the plugin.
-			@property until {Date|number|string} The date/time to count down to, or number of seconds
-						offset from now, or string of amounts and units for offset(s) from now:
-						'Y' years, 'O' months, 'W' weeks, 'D' days, 'H' hours, 'M' minutes, 'S' seconds.
-			@example until: new Date(2013, 12-1, 25, 13, 30)
- until: +300
- until: '+1O -2D'
-			@property [since] {Date|number|string} The date/time to count up from, or
-						number of seconds offset from now, or string for unit offset(s):
-						'Y' years, 'O' months, 'W' weeks, 'D' days, 'H' hours, 'M' minutes, 'S' seconds.
-			@example since: new Date(2013, 1-1, 1)
- since: -300
- since: '-1O +2D'
-			@property [timezone=null] {number} The timezone (hours or minutes from GMT) for the target times,
-						or null for client local timezone.
-			@example timezone: +10
- timezone: -60
-			@property [serverSync=null] {serverSyncCallback} A function to retrieve the current server time
-						for synchronisation.
-			@property [format='dHMS'] {string} The format for display - upper case for always, lower case only if non-zero,
-						'Y' years, 'O' months, 'W' weeks, 'D' days, 'H' hours, 'M' minutes, 'S' seconds.
-			@property [layout=''] {string} Build your own layout for the countdown.
-			@example layout: '{d<}{dn} {dl}{d>} {hnn}:{mnn}:{snn}'
-			@property [compact=false] {boolean} True to display in a compact format, false for an expanded one.
-			@property [padZeroes=false] {boolean} True to add leading zeroes
-			@property [significant=0] {number} The number of periods with non-zero values to show, zero for all.
-			@property [description=''] {string} The description displayed for the countdown.
-			@property [expiryUrl=''] {string} A URL to load upon expiry, replacing the current page.
-			@property [expiryText=''] {string} Text to display upon expiry, replacing the countdown. This may be HTML.
-			@property [alwaysExpire=false] {boolean} True to trigger <code>onExpiry</code> even if target time has passed.
-			@property [onExpiry=null] {expiryCallback} Callback when the countdown expires -
-						receives no parameters and <code>this</code> is the containing division.
-			@example onExpiry: function() {
-	...
- }
-			@property [onTick=null] {tickCallback} Callback when the countdown is updated -
-						receives <code>number[7]</code> being the breakdown by period
-						(years, months, weeks, days, hours, minutes, seconds - based on
-						<code>format</code>) and <code>this</code> is the containing division.
-			@example onTick: function(periods) {
- 	var secs = $.countdown.periodsToSeconds(periods);
- 	if (secs < 300) { // Last five minutes
-		...
- 	}
- }
-			@property [tickInterval=1] {number} The interval (seconds) between <code>onTick</code> callbacks. */
-        defaultOptions: {
+	
+	    defaultOptions: {
             until: null,
             since: null,
             timezone: null,
@@ -116,26 +42,7 @@
             onTick: null,
             tickInterval: 1
         },
-
-        /** Localisations for the plugin.
-			Entries are objects indexed by the language code ('' being the default US/English).
-			Each object has the following attributes.
-			@property [labels=['Years','Months','Weeks','Days','Hours','Minutes','Seconds']] {string[]}
-						The display texts for the counter periods.
-			@property [labels1=['Year','Month','Week','Day','Hour','Minute','Second']] {string[]}
-						The display texts for the counter periods if they have a value of 1.
-						Add other <code>labels<em>n</em></code> attributes as necessary to
-						cater for other numeric idiosyncrasies of the localisation.
-			@property [compactLabels=['y','m','w','d']] {string[]} The compact texts for the counter periods.
-			@property [whichLabels=null] {whichLabelsCallback} A function to determine which
-						<code>labels<em>n</em></code> to use.
-			@example whichLabels: function(num) {
-	return (num > 1 ? 0 : 1);
- }
-			@property [digits=['0','1',...,'9']] {number[]} The digits to display (0-9).
-			@property [timeSeparator=':'] {string} Separator for time periods in the compact layout.
-			@property [isRTL=false] {boolean} True for right-to-left languages, false for left-to-right. */
-        regionalOptions: { // Available regional settings, indexed by language/country code
+	regionalOptions: { // Available regional settings, indexed by language/country code
             '': { // Default regional settings - English/US
                 labels: ['Years', 'Months', 'Weeks', 'Days', 'Hours', 'Minutes', 'Seconds'],
                 labels1: ['Year', 'Month', 'Week', 'Day', 'Hour', 'Minute', 'Second'],
@@ -211,20 +118,7 @@
                 requestAnimationFrame(timerCallBack);
             }
         },
-
-        /** Convert a date/time to UTC.
-			@param tz {number} The hour or minute offset from GMT, e.g. +9, -360.
-			@param year {Date|number} the date/time in that timezone or the year in that timezone.
-			@param [month] {number} The month (0 - 11) (omit if <code>year</code> is a <code>Date</code>).
-			@param [day] {number} The day (omit if <code>year</code> is a <code>Date</code>).
-			@param [hours] {number} The hour (omit if <code>year</code> is a <code>Date</code>).
-			@param [mins] {number} The minute (omit if <code>year</code> is a <code>Date</code>).
-			@param [secs] {number} The second (omit if <code>year</code> is a <code>Date</code>).
-			@param [ms] {number} The millisecond (omit if <code>year</code> is a <code>Date</code>).
-			@return {Date} The equivalent UTC date/time.
-			@example $.countdown.UTCDate(+10, 2013, 12-1, 25, 12, 0)
- $.countdown.UTCDate(-7, new Date(2013, 12-1, 25, 12, 0)) */
-        UTCDate: function(tz, year, month, day, hours, mins, secs, ms) {
+	UTCDate: function(tz, year, month, day, hours, mins, secs, ms) {
             if (typeof year == 'object' && year.constructor == Date) {
                 ms = year.getMilliseconds();
                 secs = year.getSeconds();
@@ -245,13 +139,8 @@
             d.setUTCMilliseconds(ms || 0);
             return d;
         },
-
-        /** Convert a set of periods into seconds.
-	   Averaged for months and years.
-			@param periods {number[]} The periods per year/month/week/day/hour/minute/second.
-			@return {number} The corresponding number of seconds.
-			@example var secs = $.countdown.periodsToSeconds(periods) */
-        periodsToSeconds: function(periods) {
+	
+	    periodsToSeconds: function(periods) {
             return periods[0] * 31557600 + periods[1] * 2629800 + periods[2] * 604800 +
                 periods[3] * 86400 + periods[4] * 3600 + periods[5] * 60 + periods[6];
         },
@@ -262,26 +151,19 @@
             };
         },
 
-        /** Add an element to the list of active ones.
-        	@private
-        	@param elem {Element} The countdown element. */
+       
         _addElem: function(elem) {
             if (!this._hasElem(elem)) {
                 this._timerElems.push(elem);
             }
         },
 
-        /** See if an element is in the list of active ones.
-        	@private
-        	@param elem {Element} The countdown element.
-        	@return {boolean} True if present, false if not. */
+        
         _hasElem: function(elem) {
             return ($.inArray(elem, this._timerElems) > -1);
         },
 
-        /** Remove an element from the list of active ones.
-        	@private
-        	@param elem {Element} The countdown element. */
+        
         _removeElem: function(elem) {
             this._timerElems = $.map(this._timerElems,
                 function(value) {
@@ -313,10 +195,7 @@
             this._updateCountdown(elem, inst);
         },
 
-        /** Redisplay the countdown with an updated display.
-        	@private
-        	@param elem {Element|jQuery} The containing division.
-        	@param inst {object} The current settings for this instance. */
+        
         _updateCountdown: function(elem, inst) {
             elem = elem.jquery ? elem : $(elem);
             inst = inst || this._getInst(elem);
@@ -358,10 +237,7 @@
             }
         },
 
-        /** Reset any extra labelsn and compactLabelsn entries if changing labels.
-        	@private
-        	@param base {object} The options to be updated.
-        	@param options {object} The new option values. */
+        
         _resetExtraLabels: function(base, options) {
             for (var n in options) {
                 if (n.match(/[Ll]abels[02-9]|compactLabels1/)) {
@@ -375,11 +251,7 @@
             }
         },
 
-        /** Calculate internal settings for an instance.
-        	@private
-        	@param elem {jQuery} The containing division.
-        	@param inst {object} The current settings for this instance.
-        	@param recalc {boolean} True if until or since are set. */
+       
         _adjustSettings: function(elem, inst, recalc) {
             var now;
             var serverOffset = 0;
